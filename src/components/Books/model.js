@@ -29,7 +29,7 @@ const BooksSchema = new Schema(
         },
     },
     {
-        collection: 'booksmodel',
+        collection: 'booksModel',
         versionKey: false,
     },
 );
