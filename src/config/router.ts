@@ -1,17 +1,18 @@
-const express = require('express');
-const http = require('http');
-const BooksRouter = require('../components/Books/router');
+import * as express from 'express';
+import * as http from 'http';
+import BooksRouter from '../components/Books/router';
 
-module.exports = {
-    /**
-     * @function
-     * @param {express.Application} app
-     * @summary init Application router
-     * @returns void
-     */
-    init(app) {
-        const router = express.Router();
+export class AppRouter {
+    private app: express.Application;
 
+    private router: express.Router;
+
+    constructor(app: express.Application) {
+        this.app = app;
+        this.router = express.Router();
+    }
+
+    public init(): void {
         /**
          * Forwards any requests to the /v1/books URI to BooksRouter.
          * @name /v1/books
@@ -20,7 +21,7 @@ module.exports = {
          * @param {string} path - Express path
          * @param {callback} middleware - Express middleware.
          */
-        app.use('/v1/books', BooksRouter);
+        this.app.use('/v1/books', BooksRouter);
 
         /**
          * @description No results returned mean the object is not found
@@ -28,7 +29,7 @@ module.exports = {
          * @inner
          * @param {callback} middleware - Express middleware.
          */
-        app.use((req, res) => {
+        this.app.use((req: express.Request, res: express.Response): void => {
             res.status(404).send(http.STATUS_CODES[404]);
         });
 
@@ -37,6 +38,6 @@ module.exports = {
          * @inner
          * @param {express.Router}
          */
-        app.use(router);
-    },
-};
+        this.app.use(this.router);
+    }
+}

@@ -1,34 +1,37 @@
-const bodyParser = require('body-parser');
-const compression = require('compression');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const helmet = require('helmet');
+import {
+    Application, Request, Response, NextFunction,
+} from 'express';
+import * as bodyParser from 'body-parser';
+import * as compression from 'compression';
+import * as cookieParser from 'cookie-parser';
+import * as cors from 'cors';
+import * as helmet from 'helmet';
 
-module.exports = {
-    /**
-     * @function
-     * @description express middleware
-     * @param {express.Application} app
-     * @returns void
-     */
-    init(app) {
-        app.use(
+export class Middleware {
+    private app: Application;
+
+    constructor(app: Application) {
+        this.app = app;
+    }
+
+    public init(): void {
+        this.app.use(
             bodyParser.urlencoded({
                 extended: true,
             }),
         );
-        app.use(bodyParser.json());
+        this.app.use(bodyParser.json());
         // parse Cookie header and populate req.cookies with an object keyed by the cookie names.
-        app.use(cookieParser());
+        this.app.use(cookieParser());
         // returns the compression middleware
-        app.use(compression());
+        this.app.use(compression());
         // helps you secure your Express apps by setting various HTTP headers
-        app.use(helmet());
+        this.app.use(helmet());
         // providing a Connect/Express middleware that
         // can be used to enable CORS with various options
-        app.use(cors());
+        this.app.use(cors());
         // cors
-        app.use((req, res, next) => {
+        this.app.use((req: Request, res: Response, next: NextFunction): void => {
             res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS ');
             res.header('Access-Control-Allow-Credentials', '*');
             res.header(
@@ -40,5 +43,5 @@ module.exports = {
             );
             next();
         });
-    },
-};
+    }
+}
